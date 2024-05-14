@@ -1,0 +1,32 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import configInformation from './common/setting-information';
+import { FilmsModule } from './modules/films/films.module';
+import { Film } from '@entities/film.entity';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [configInformation],
+    }),
+    FilmsModule,
+    TypeOrmModule.forRoot({
+      type: configInformation().database.type,
+      host: configInformation().database.host,
+      port: configInformation().database.port,
+      username: configInformation().database.username,
+      password: configInformation().database.password,
+      database: configInformation().database.database,
+      entities: ['dist/**/**/*.entity{.ts,.js}'], //dist\src\entities\film.entity.js
+      // entities: [Film],
+
+      synchronize: false,
+    }),
+  ],
+  controllers: [],
+  providers: [],
+})
+export class AppModule {
+  constructor() {}
+}
